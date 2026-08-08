@@ -1,7 +1,8 @@
 src-tauri/target/
 src-tauri/gen/
 node_modules/
-dist/
+# dist/index.html is the frontend shell, committed intentionally
+# dist/
 .vscode/
 .idea/
 *.swp
