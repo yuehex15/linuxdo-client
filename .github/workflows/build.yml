@@ -11,15 +11,27 @@ env:
 jobs:
   build-windows:
     runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with: { targets: x86_64-pc-windows-msvc }
-      - run: rustc --version && cargo --version
 
-      - uses: actions/cache@v4
+      - name: 安装 Rust 工具链
+        uses: dtolnay/rust-toolchain@stable
         with:
-          path: ~/.cargo/bin/cargo-tauri* ~/.cargo/.crates.toml ~/.cargo/.crates2.json
+          targets: x86_64-pc-windows-msvc
+
+      - name: 安装依赖
+        run: |
+          rustc --version
+          cargo --version
+
+      - name: 缓存 Tauri CLI
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/cargo-tauri*
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
           key: tauri-cli-${{ runner.os }}-2
 
       - name: 安装 Tauri CLI
@@ -31,16 +43,23 @@ jobs:
             echo "Tauri CLI 已缓存，跳过编译"
           fi
 
-      - run: cargo tauri build --bundles msi
+      - name: 构建 Linux.Do 客户端
+        run: cargo tauri build --bundles msi
 
-      - uses: actions/upload-artifact@v4
+      - name: 创建 Release
+        uses: ncipollo/release-action@v1
         with:
-          name: LinuxDo-Windows-x64
-          path: src-tauri/target/release/bundle/msi/*.msi
-          compression-level: 0
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: LinuxDo-Windows-x64-exe
-          path: src-tauri/target/release/*.exe
-          compression-level: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ github.run_number }}
+          name: "Linux.Do v${{ github.run_number }}"
+          body: |
+            Linux.Do 轻量 Windows 客户端自动构建
+            
+            - 构建时间: ${{ github.event.head_commit.timestamp || github.event.repository.updated_at }}
+            - 提交: ${{ github.sha }}
+          artifacts: |
+            src-tauri/target/release/bundle/msi/*.msi
+            src-tauri/target/release/app.exe
+          artifactContentType: application/octet-stream
+          draft: false
+          prerelease: false
