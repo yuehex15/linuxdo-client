@@ -8,7 +8,7 @@ fn toggle_fullscreen(window: tauri::WebviewWindow) -> Result<(), String> {
 
 #[tauri::command]
 fn navigate(window: tauri::WebviewWindow, url: String) -> Result<(), String> {
-    window.navigate(url::Url::parse(&url).map_err(|e| e.to_string())?)
+    window.navigate(tauri::Url::parse(&url).map_err(|e| e.to_string())?)
         .map_err(|e| e.to_string())
 }
 
