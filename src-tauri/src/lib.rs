@@ -1,5 +1,6 @@
 // Linux.Do 客户端 - 极轻量 Tauri 壳
-// 专为低内存设备优化（如小米平板2, 2GB RAM）
+
+use tauri::WebviewWindowExt;
 
 #[tauri::command]
 fn open_external(url: String) {
