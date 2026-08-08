@@ -17,19 +17,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: x86_64-pc-windows-msvc }
+      - run: rustc --version && cargo --version
 
-      - name: 安装 Rust 工具链
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-pc-windows-msvc
-
-      - name: 安装依赖
-        run: |
-          rustc --version
-          cargo --version
-
-      - name: 缓存 Tauri CLI
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/cargo-tauri*
@@ -47,7 +39,15 @@ jobs:
           fi
 
       - name: 构建 Linux.Do 客户端
-        run: cargo tauri build --bundles msi
+        run: cargo tauri build
+
+      - name: 打包 zip
+        shell: bash
+        run: |
+          mkdir -p release/LinuxDo
+          cp src-tauri/target/release/*.exe release/LinuxDo/
+          cp settings.ini release/LinuxDo/
+          powershell -Command "Compress-Archive -Path 'release/LinuxDo/*' -DestinationPath 'release/LinuxDo-Windows-x64.zip' -Force"
 
       - name: 创建 Release
         uses: ncipollo/release-action@v1
@@ -58,11 +58,12 @@ jobs:
           body: |
             Linux.Do 轻量 Windows 客户端自动构建
             
-            - 构建时间: ${{ github.event.head_commit.timestamp || github.event.repository.updated_at }}
-            - 提交: ${{ github.sha }}
-          artifacts: |
-            src-tauri/target/release/bundle/msi/*.msi
-            src-tauri/target/release/*.exe
-          artifactContentType: application/octet-stream
+            使用方法：
+            1. 下载 LinuxDo-Windows-x64.zip
+            2. 解压到任意目录
+            3. 运行 LinuxDo.exe
+            4. 如需修改域名/代理，编辑 settings.ini 后重启
+          artifacts: release/LinuxDo-Windows-x64.zip
+          artifactContentType: application/zip
           draft: false
           prerelease: false
