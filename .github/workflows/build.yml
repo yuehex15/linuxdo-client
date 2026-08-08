@@ -59,7 +59,7 @@ jobs:
             - 提交: ${{ github.sha }}
           artifacts: |
             src-tauri/target/release/bundle/msi/*.msi
-            src-tauri/target/release/app.exe
+            src-tauri/target/release/*.exe
           artifactContentType: application/octet-stream
           draft: false
           prerelease: false

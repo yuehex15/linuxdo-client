@@ -2,6 +2,7 @@
   "productName": "Linux.Do",
   "version": "0.1.0",
   "identifier": "com.linuxdo.client",
+  "mainBinaryName": "LinuxDo",
   "build": {
     "frontendDist": "../dist"
   },
