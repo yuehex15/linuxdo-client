@@ -21,7 +21,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' https://linux.do https://*.linux.do; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://linux.do; font-src 'self' https: data:; frame-src 'self' https://linux.do"
+      "csp": null
     }
   },
   "bundle": {
