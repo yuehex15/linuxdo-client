@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/cache@v4
         with:
-          path: ~/.cargo/bin/tauri* ~/.cargo/.crates.toml ~/.cargo/.crates2.json
+          path: ~/.cargo/bin/cargo-tauri* ~/.cargo/.crates.toml ~/.cargo/.crates2.json
           key: tauri-cli-${{ runner.os }}-2
 
       - name: 安装 Tauri CLI
